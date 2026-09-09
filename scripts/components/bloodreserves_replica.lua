@@ -25,7 +25,6 @@ function BloodReserves:SetCurrent(currentblood)
     if self.classified ~= nil then
         self.classified:SetValue("currentblood", currentblood)
     end
-    print("Current blood:", self.classified.currentblood:value())
 end
 
 function BloodReserves:GetCurrent()

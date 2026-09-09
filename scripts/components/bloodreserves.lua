@@ -24,8 +24,6 @@ local Bloodreserves = Class(function (self, inst)
     self.drainmultmodifiers = SourceModifierList(self.inst) -- вот это из-за Klei
 
     self.updatetask = self.inst:DoPeriodicTask(UPDATE_PERIOD, OnTaskTick, nil, self)
-
-    print("BloodReserves created!")
 end,
 nil,
 {
@@ -100,26 +98,38 @@ function Bloodreserves:DoDelta(delta, overtime, ignore_invincible)
     self:SetCurrent(self.currentblood + delta, overtime)
 end
 
-function Bloodreserves:GetTemperatureModifier()
-    return self.inst.components.temperaturemodifier.GetBloodDraining()
-end
 
 function Bloodreserves:Consume(dt, ignore_damage)
     if self:IsPaused() then
         return
     end
-    
+
+    local temperaturemodifier = self.inst.components.temperaturecoefficients:GetBloodDraining()
 
     if self.currentblood > 0 then
-        self:DoDelta(-self.blooddrainrate * dt * self.drainmult * self.drainmultmodifiers:Get() * self:GetTemperatureModifier(), true)
+        self:DoDelta(-self.blooddrainrate * dt * self.drainmult * self.drainmultmodifiers:Get() * temperaturemodifier, true)
 
     elseif not ignore_damage then
         if self.overridestarvefn ~= nil then
             self.overridestarvefn(self.inst, dt)
         else
-            self.inst.components.integrity:DoDelta(-self.integritydamagerate * dt, true, "blood")
+           -- self.inst.components.integrity:DoDelta(-self.integritydamagerate * dt, true, "blood")
         end
     end
+   -- print(
+   --     "BLOOD:",
+   --     self.currentblood,
+   --     "DT:",
+   --     dt,
+   --     "RATE:",
+   --     self.blooddrainrate,
+   --     "MULT:",
+   --     self.drainmult,
+   --     "MOD:",
+   --     self.drainmultmodifiers:Get(),
+   --     "temperaturecoefficients:",
+   --     temperaturemodifier
+   -- )
 end
 
 function Bloodreserves:LongUpdate(dt)

@@ -3,6 +3,7 @@ PrefabFiles = {
 }
 
 AddReplicableComponent("bloodreserves")
+AddReplicableComponent("energy")
 
 AddPrefabPostInit("player_classified", function(inst)
     inst.currentblood = GLOBAL.net_ushortint(
@@ -10,12 +11,14 @@ AddPrefabPostInit("player_classified", function(inst)
         "bloodreserves.currentblood",
         "bloodreservesdirty"
     )
-
-    inst.currentblood:set(70)
+    inst.currentenergy = GLOBAL.net_ushortint(
+        inst.GUID,
+        "energy.currentenergy",
+        "energydirty"
+    )
 end)
 
-AddComponentPostInit("bloodreserves", function(self)
-    print("BLOODRESERVES CREATED")
-end)
+AddComponentPostInit("bloodreserves")
+AddComponentPostInit("energy")
 
 AddModCharacter("V1", "MALE")
